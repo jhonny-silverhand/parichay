@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    <title>Parichay - Offline Digital Business Card</title>
+    <meta name="description" content="A private digital business card that lives only on your phone. Generates compact offline vCard QR codes, customisable styles, Apple/Google Wallet cards, and lock-screen wallpapers with zero cloud or tracking." />
+    <meta name="author" content="Omkar Kardile" />
+    <link rel="author" href="https://omkardile.is-a.dev/" />
+    
+    <!-- Content Security Policy: Pure Offline & Local -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; form-action 'none'; base-uri 'self'; object-src 'none';" />
+
+    <!-- PWA & Mobile Web Standards -->
+    <meta name="theme-color" content="#111317" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Parichay" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+
+    <!-- OpenGraph & Social Sharing -->
+    <meta property="og:title" content="Parichay - Offline Digital Business Card" />
+    <meta property="og:description" content="A private digital business card that lives only on your phone. One card. One scan. Nothing leaves your phone." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Parichay - Offline Digital Business Card" />
+    <meta name="twitter:description" content="One card. One scan. Nothing leaves your phone." />
+    <meta name="twitter:image" content="/og-image.svg" />
+  </head>
+  <body class="antialiased select-none">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

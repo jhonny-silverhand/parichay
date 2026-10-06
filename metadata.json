@@ -1,0 +1,6 @@
+{
+  "name": "Parichay - Offline Digital Business Card",
+  "description": "A private digital business card that lives only on your phone. Generates compact offline vCard QR codes, customisable styles, Apple/Google Wallet cards, and lock-screen wallpapers with zero cloud or tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

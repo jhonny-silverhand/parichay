@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80" width="400" height="80" fill="none">
+  <text x="10" y="55" font-family="'Fraunces', 'Playfair Display', Georgia, serif" font-size="44" font-weight="700" letter-spacing="-0.02em" fill="#111317">
+    Parichay
+  </text>
+  <circle cx="218" cy="46" r="5" fill="#B85226"/>
+  <text x="236" y="52" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="14" font-weight="500" letter-spacing="0.06em" fill="#505663">
+    परिचय
+  </text>
+</svg>

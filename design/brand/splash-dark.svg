@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" fill="none">
+  <rect width="1080" height="1920" fill="#0F1115"/>
+  <g transform="translate(420, 840)">
+    <rect width="240" height="240" rx="54" fill="#181B21" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+    <path d="M68 52H136C165.271 52 189 75.729 189 105C189 134.271 165.271 158 136 158H98V188H68V52Z" fill="#F3F1EC"/>
+    <rect x="98" y="82" width="38" height="44" rx="8" fill="#C85D2F"/>
+    <circle cx="158" cy="172" r="15" fill="#C85D2F"/>
+  </g>
+  <text x="540" y="1160" text-anchor="middle" font-family="'Fraunces', Georgia, serif" font-size="44" font-weight="700" fill="#F3F1EC">
+    Parichay
+  </text>
+  <text x="540" y="1205" text-anchor="middle" font-family="'Instrument Sans', sans-serif" font-size="18" font-weight="500" letter-spacing="0.1em" fill="#9EA4B1">
+    ONE CARD · ONE SCAN · NOTHING LEAVES YOUR PHONE
+  </text>
+</svg>

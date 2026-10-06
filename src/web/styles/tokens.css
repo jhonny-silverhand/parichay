@@ -1,0 +1,155 @@
+/**
+ * AUTO-GENERATED DESIGN TOKENS
+ * Generated from design/tokens/tokens.json by scripts/tokens-build.mjs
+ * DO NOT EDIT DIRECTLY.
+ */
+
+:root {
+  /* Layout & Geometry */
+  --layout-max-width: 540px;
+  --layout-desktop-split: 1080px;
+  --min-touch-target: 44px;
+
+  /* Typography Families */
+  --font-display: 'Fraunces', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Instrument Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Space Mono', monospace;
+  --font-devanagari: 'Noto Sans Devanagari', sans-serif;
+
+  /* Typography Scales */
+  --text-2xs: 10px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 17px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 30px;
+  --text-3xl: 38px;
+  --text-display: 48px;
+
+  /* Font Weights */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Line Heights */
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-widest: 0.1em;
+
+  /* Spacing Grid (4/8pt) */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radius Scale */
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Elevation Shadows */
+  --elevation-none: none;
+  --elevation-subtle: 0 1px 2px rgba(17, 19, 23, 0.04), 0 2px 6px rgba(17, 19, 23, 0.03);
+  --elevation-card: 0 4px 12px rgba(17, 19, 23, 0.05), 0 1px 3px rgba(17, 19, 23, 0.03);
+  --elevation-sheet: 0 -8px 24px rgba(17, 19, 23, 0.08), 0 -2px 6px rgba(17, 19, 23, 0.04);
+  --elevation-floating: 0 12px 32px rgba(17, 19, 23, 0.12), 0 4px 8px rgba(17, 19, 23, 0.06);
+
+  /* Motion & Transitions */
+  --duration-instant: 100ms;
+  --duration-fast: 180ms;
+  --duration-normal: 260ms;
+  --duration-deliberate: 360ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Light Theme Colors (Default) */
+  --color-bg-primary: #F7F5F0;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-surface-sunken: #EFECE6;
+  --color-bg-surface-elevated: #FFFFFF;
+  --color-text-primary: #111317;
+  --color-text-secondary: #505663;
+  --color-text-tertiary: #7E8594;
+  --color-accent: #B85226;
+  --color-accent-hover: #9E441D;
+  --color-accent-subtle: #F6EAE4;
+  --color-accent-text: #FFFFFF;
+  --color-border-hairline: rgba(17, 19, 23, 0.08);
+  --color-border-strong: rgba(17, 19, 23, 0.16);
+  --color-border-focus: #B85226;
+  --color-qr-plate: #FFFFFF;
+  --color-qr-module: #111317;
+  --color-status-success: #2D6A4F;
+  --color-status-warning: #C05621;
+  --color-status-error: #9B2226;
+}
+
+/* Dark Theme Token Overrides */
+[data-theme="dark"] {
+  --color-bg-primary: #0F1115;
+  --color-bg-surface: #181B21;
+  --color-bg-surface-sunken: #13151A;
+  --color-bg-surface-elevated: #22262E;
+  --color-text-primary: #F3F1EC;
+  --color-text-secondary: #9EA4B1;
+  --color-text-tertiary: #6B7280;
+  --color-accent: #C85D2F;
+  --color-accent-hover: #DF6E3D;
+  --color-accent-subtle: #2D1D16;
+  --color-accent-text: #FFFFFF;
+  --color-border-hairline: rgba(255, 255, 255, 0.09);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-border-focus: #C85D2F;
+  --color-qr-plate: #FDFBF7;
+  --color-qr-module: #111317;
+  --color-status-success: #40916C;
+  --color-status-warning: #DD6B20;
+  --color-status-error: #E53E3E;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-primary: #0F1115;
+    --color-bg-surface: #181B21;
+    --color-bg-surface-sunken: #13151A;
+    --color-bg-surface-elevated: #22262E;
+    --color-text-primary: #F3F1EC;
+    --color-text-secondary: #9EA4B1;
+    --color-text-tertiary: #6B7280;
+    --color-accent: #C85D2F;
+    --color-accent-hover: #DF6E3D;
+    --color-accent-subtle: #2D1D16;
+    --color-accent-text: #FFFFFF;
+    --color-border-hairline: rgba(255, 255, 255, 0.09);
+    --color-border-strong: rgba(255, 255, 255, 0.18);
+    --color-border-focus: #C85D2F;
+    --color-qr-plate: #FDFBF7;
+    --color-qr-module: #111317;
+    --color-status-success: #40916C;
+    --color-status-warning: #DD6B20;
+    --color-status-error: #E53E3E;
+  }
+}
