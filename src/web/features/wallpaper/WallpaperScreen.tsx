@@ -25,7 +25,8 @@ import {
   EyeOff,
   Flame,
   Check,
-  Share2,
+  Palette,
+  Compass,
 } from 'lucide-react';
 
 export const WallpaperScreen: React.FC = () => {
@@ -33,8 +34,9 @@ export const WallpaperScreen: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [selectedPresetId, setSelectedPresetId] = useState<string>('amoled-obsidian');
-  const [frameStyle, setFrameStyle] = useState<'glass' | 'cyber' | 'minimal' | 'neon'>('glass');
+  const [activeCategory, setActiveCategory] = useState<'art' | 'abstract' | 'all'>('art');
+  const [selectedPresetId, setSelectedPresetId] = useState<string>('art-cat-peeking');
+  const [frameStyle, setFrameStyle] = useState<'glass' | 'cyber' | 'minimal' | 'neon' | 'art'>('art');
   const [deviceMockStyle, setDeviceMockStyle] = useState<'ios' | 'android'>('ios');
   const [showSafeZoneOverlay, setShowSafeZoneOverlay] = useState<boolean>(true);
   const [targetResolution, setTargetResolution] = useState<'native' | 'iphone' | 'android_qhd'>('native');
@@ -77,7 +79,7 @@ export const WallpaperScreen: React.FC = () => {
     setFrameStyle(preset.frameStyle);
   };
 
-  const handleFrameStyleSelect = (f: 'glass' | 'cyber' | 'minimal' | 'neon') => {
+  const handleFrameStyleSelect = (f: 'glass' | 'cyber' | 'minimal' | 'neon' | 'art') => {
     haptics.impact('light');
     archipelagoAudio.playClick();
     setFrameStyle(f);
@@ -148,6 +150,13 @@ export const WallpaperScreen: React.FC = () => {
     }
   };
 
+  // Filter presets based on category
+  const filteredPresets = WALLPAPER_PRESETS.filter((p) => {
+    if (activeCategory === 'art') return p.category === 'art';
+    if (activeCategory === 'abstract') return p.category !== 'art';
+    return true;
+  });
+
   return (
     <div className="w-full max-w-md mx-auto px-4 py-4 space-y-5 pb-28 animate-in fade-in">
       {/* Header */}
@@ -167,7 +176,7 @@ export const WallpaperScreen: React.FC = () => {
             ARCHIPELAGO // HUD
           </span>
           <h1 className="text-sm font-bold font-serif text-[var(--color-text-primary)]">
-            Lockscreen Monolith
+            Lockscreen Art &amp; Wallpaper
           </h1>
         </div>
         <button
@@ -276,29 +285,82 @@ export const WallpaperScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 1. Curated Wallpaper Presets Gallery */}
+      {/* 1. Category Filter Segmented Control */}
+      <div className="flex items-center p-1 rounded-2xl liquid-glass border border-black/5 dark:border-white/10 gap-1">
+        <button
+          type="button"
+          onClick={() => {
+            haptics.impact('light');
+            archipelagoAudio.playClick();
+            setActiveCategory('art');
+          }}
+          className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
+            activeCategory === 'art'
+              ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
+              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+          }`}
+        >
+          <span>🎨</span>
+          <span>Art &amp; Cartoons</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            haptics.impact('light');
+            archipelagoAudio.playClick();
+            setActiveCategory('abstract');
+          }}
+          className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
+            activeCategory === 'abstract'
+              ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
+              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+          }`}
+        >
+          <span>🌌</span>
+          <span>Ambient &amp; OLED</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            haptics.impact('light');
+            archipelagoAudio.playClick();
+            setActiveCategory('all');
+          }}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+            activeCategory === 'all'
+              ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
+              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+          }`}
+        >
+          All
+        </button>
+      </div>
+
+      {/* 2. Curated Wallpaper Presets Gallery */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-1.5">
-            <Flame className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+            <Palette className="w-3.5 h-3.5 text-[var(--color-accent)]" />
             <span className="text-2xs font-mono font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">
-              CURATED_WALLPAPER_PRESETS // GALLERY
+              {activeCategory === 'art' ? 'ART_TEMPLATES // CARTOONS & SCENES' : 'ATMOSPHERE_PRESETS // GALLERY'}
             </span>
           </div>
           <span className="text-[10px] font-mono text-[var(--color-accent)] font-semibold">
-            {WALLPAPER_PRESETS.length} PRESETS
+            {filteredPresets.length} TEMPLATES
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          {WALLPAPER_PRESETS.map((preset) => {
+          {filteredPresets.map((preset) => {
             const isSelected = selectedPresetId === preset.id;
             return (
               <button
                 key={preset.id}
                 type="button"
                 onClick={() => handlePresetSelect(preset)}
-                className={`p-3 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[92px] border ${
+                className={`p-3 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px] border ${
                   isSelected
                     ? 'border-[var(--color-accent)] ring-2 ring-[var(--color-accent)]/30 shadow-md scale-[1.01]'
                     : 'border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/25 liquid-glass'
@@ -311,9 +373,12 @@ export const WallpaperScreen: React.FC = () => {
                 <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
                 <div className="relative z-10 flex items-start justify-between w-full">
-                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white backdrop-blur-xs font-semibold tracking-wider uppercase">
-                    {preset.category}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm">{preset.iconEmoji}</span>
+                    <span className="text-[8px] font-mono px-1.5 py-0.5 rounded-full bg-white/20 text-white backdrop-blur-xs font-semibold tracking-wider uppercase">
+                      {preset.category === 'art' ? preset.artTheme : preset.category}
+                    </span>
+                  </div>
                   {isSelected && (
                     <div className="w-5 h-5 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center shadow-xs">
                       <Check className="w-3 h-3 stroke-[3]" />
@@ -335,14 +400,15 @@ export const WallpaperScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. QR Frame & Pedestal Style Selector */}
+      {/* 3. QR Frame & Pedestal Style Selector */}
       <div className="space-y-2">
         <span className="text-2xs font-mono font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block px-1">
           QR_PEDESTAL // FRAME_STYLE
         </span>
-        <div className="grid grid-cols-4 gap-1.5 p-1 rounded-2xl liquid-glass border border-black/5 dark:border-white/10">
+        <div className="grid grid-cols-5 gap-1 p-1 rounded-2xl liquid-glass border border-black/5 dark:border-white/10">
           {(
             [
+              { id: 'art', label: 'Art Mat' },
               { id: 'glass', label: 'Liquid Glass' },
               { id: 'cyber', label: 'Cyber Brackets' },
               { id: 'minimal', label: 'Minimalist' },
@@ -353,7 +419,7 @@ export const WallpaperScreen: React.FC = () => {
               key={f.id}
               type="button"
               onClick={() => handleFrameStyleSelect(f.id)}
-              className={`py-2 px-1 rounded-xl text-center text-2xs font-mono transition-all ${
+              className={`py-2 px-0.5 rounded-xl text-center text-[10px] font-mono transition-all truncate ${
                 frameStyle === f.id
                   ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
                   : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
@@ -365,7 +431,7 @@ export const WallpaperScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Output Resolution Selector */}
+      {/* 4. Output Resolution Selector */}
       <div className="space-y-2">
         <span className="text-2xs font-mono font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block px-1">
           TARGET_RESOLUTION // CANVAS_DENSITY
@@ -398,7 +464,7 @@ export const WallpaperScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Primary Actions Stack */}
+      {/* 5. Primary Actions Stack */}
       <div className="space-y-2.5 pt-1">
         <Button
           fullWidth
@@ -445,7 +511,7 @@ export const WallpaperScreen: React.FC = () => {
           icon={<Download className="w-4 h-4 text-[var(--color-accent)]" />}
           className="font-mono text-xs tracking-wider"
         >
-          SAVE 4K WALLPAPER (IOS & GALLERY)
+          SAVE 4K WALLPAPER (IOS &amp; GALLERY)
         </Button>
       </div>
 
