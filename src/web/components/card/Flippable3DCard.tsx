@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { haptics } from '@/platform';
-import { archipelagoAudio } from '@/web/lib/archipelagoAudio';
 
 interface Flippable3DCardProps {
   front: React.ReactNode;
@@ -8,18 +7,15 @@ interface Flippable3DCardProps {
   isFlipped: boolean;
   onFlipToggle?: (flipped: boolean) => void;
   className?: string;
-  enableOverdrive?: boolean;
 }
 
 /**
- * Flippable3DCard — The Archipelago Identity Monolith
+ * Flippable3DCard — Minimalist Tactile Business Card
  * 
- * An avant-garde physical talisman component:
- * - Magnetic 3D tilt tracking with spring decay.
- * - Dynamic caustics & prismatic RGB chromatic aberration flare.
- * - Specular rim highlights with laser-etched crosshairs.
- * - 180° spatial axis flip with 3D depth layering.
- * - Synthesizer audio feedback.
+ * Provides an organic, tactile physical card interaction:
+ * - Subtle 3D perspective tilt reacting to cursor / touch movement.
+ * - Smooth 180° flip animation with spring physics.
+ * - Refined, clean, minimalist design with zero visual clutter.
  */
 export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
   front,
@@ -27,7 +23,6 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
   isFlipped,
   onFlipToggle,
   className = '',
-  enableOverdrive = false,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -46,15 +41,15 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Up to 15 degrees of dramatic 3D perspective tilt
-    const rotateX = ((y - centerY) / centerY) * -15;
-    const rotateY = ((x - centerX) / centerX) * 15;
+    // Subtle 8-degree physical tilt
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
 
     const glareX = (x / rect.width) * 100;
     const glareY = (y / rect.height) * 100;
 
     setTilt({ x: rotateX, y: rotateY });
-    setGlare({ x: glareX, y: glareY, opacity: 0.55 });
+    setGlare({ x: glareX, y: glareY, opacity: 0.25 });
   }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
@@ -67,11 +62,11 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -12;
-    const rotateY = ((x - centerX) / centerX) * 12;
+    const rotateX = ((y - centerY) / centerY) * -6;
+    const rotateY = ((x - centerX) / centerX) * 6;
 
     setTilt({ x: rotateX, y: rotateY });
-    setGlare({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 0.5 });
+    setGlare({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 0.2 });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
@@ -80,8 +75,7 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
   }, []);
 
   const handleCardClick = () => {
-    haptics.impact('medium');
-    archipelagoAudio.playFlip();
+    haptics.impact('light');
     if (onFlipToggle) {
       onFlipToggle(!isFlipped);
     }
@@ -89,7 +83,7 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
 
   return (
     <div
-      className={`relative w-full select-none cursor-pointer [perspective:1400px] ${className}`}
+      className={`relative w-full select-none cursor-pointer [perspective:1200px] ${className}`}
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleMouseLeave}
@@ -97,7 +91,7 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
-      aria-label={isFlipped ? 'Flip talisman to front face' : 'Flip talisman to photonic QR core'}
+      aria-label={isFlipped ? 'Flip card to front' : 'Flip card to QR code'}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -105,29 +99,7 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
         }
       }}
     >
-      {/* Outer Archipelago Orbit Crosshairs */}
-      <div className="absolute -top-3 -left-3 font-mono text-[9px] text-[var(--color-accent)] opacity-60 pointer-events-none select-none">
-        ⌜ 01
-      </div>
-      <div className="absolute -top-3 -right-3 font-mono text-[9px] text-[var(--color-accent)] opacity-60 pointer-events-none select-none">
-        ⌝
-      </div>
-      <div className="absolute -bottom-3 -left-3 font-mono text-[9px] text-[var(--color-accent)] opacity-60 pointer-events-none select-none">
-        ⌞
-      </div>
-      <div className="absolute -bottom-3 -right-3 font-mono text-[9px] text-[var(--color-accent)] opacity-60 pointer-events-none select-none">
-        ⌟
-      </div>
-
-      {/* Holographic Overdrive Beam effect */}
-      {enableOverdrive && (
-        <div
-          aria-hidden="true"
-          className="absolute -inset-4 rounded-[42px] pointer-events-none opacity-60 bg-gradient-to-r from-cyan-500/20 via-[var(--color-accent)]/30 to-purple-500/20 blur-xl animate-pulse -z-10"
-        />
-      )}
-
-      {/* 3D Rotating Monolith Shell */}
+      {/* 3D Card Shell */}
       <div
         ref={cardRef}
         className="w-full relative transition-transform duration-500 ease-out [transform-style:preserve-3d]"
@@ -135,22 +107,22 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
           transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y + (isFlipped ? 180 : 0)}deg)`,
         }}
       >
-        {/* Dynamic Holographic Specular Glare & Prismatic Sheen */}
+        {/* Subtle Specular Sheen */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 z-30 pointer-events-none rounded-[36px] transition-opacity duration-300"
+          className="absolute inset-0 z-30 pointer-events-none rounded-[32px] transition-opacity duration-300"
           style={{
             opacity: glare.opacity,
-            background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, 0.6) 0%, rgba(245, 158, 11, 0.25) 25%, rgba(56, 189, 248, 0.2) 50%, rgba(168, 85, 247, 0.15) 70%, transparent 85%)`,
+            background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, 0.3) 0%, transparent 60%)`,
           }}
         />
 
-        {/* FRONT FACE (The Sovereign Identity Glyph) */}
+        {/* FRONT FACE */}
         <div className="w-full [backface-visibility:hidden] [transform:rotateY(0deg)]">
           {front}
         </div>
 
-        {/* BACK FACE (The Photonic QR Singularity) */}
+        {/* BACK FACE */}
         <div className="w-full absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
           {back}
         </div>
@@ -158,4 +130,3 @@ export const Flippable3DCard: React.FC<Flippable3DCardProps> = ({
     </div>
   );
 };
-

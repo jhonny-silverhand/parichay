@@ -12,21 +12,16 @@ import { DeviceTools } from '@/native/device-tools';
 import { Button } from '@/web/components/ui/Button';
 import { useToast } from '@/web/components/ui/Toast';
 import { haptics } from '@/platform';
-import { archipelagoAudio } from '@/web/lib/archipelagoAudio';
 import {
   ArrowLeft,
   Smartphone,
   Download,
   Info,
   Layers,
-  Sparkles,
   SlidersHorizontal,
   Eye,
   EyeOff,
-  Flame,
   Check,
-  Palette,
-  Compass,
 } from 'lucide-react';
 
 export const WallpaperScreen: React.FC = () => {
@@ -34,38 +29,21 @@ export const WallpaperScreen: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [activeCategory, setActiveCategory] = useState<'art' | 'abstract' | 'all'>('art');
-  const [selectedPresetId, setSelectedPresetId] = useState<string>('art-cat-peeking');
-  const [frameStyle, setFrameStyle] = useState<'glass' | 'cyber' | 'minimal' | 'neon' | 'art'>('art');
+  const [selectedPresetId, setSelectedPresetId] = useState<string>('minimal-charcoal');
   const [deviceMockStyle, setDeviceMockStyle] = useState<'ios' | 'android'>('ios');
   const [showSafeZoneOverlay, setShowSafeZoneOverlay] = useState<boolean>(true);
-  const [targetResolution, setTargetResolution] = useState<'native' | 'iphone' | 'android_qhd'>('native');
   const [wallpaperResult, setWallpaperResult] = useState<WallpaperResult | null>(null);
   const [isApplying, setIsApplying] = useState(false);
 
   useEffect(() => {
     if (!card) return;
 
-    let width: number | undefined;
-    let height: number | undefined;
-
-    if (targetResolution === 'iphone') {
-      width = 1290;
-      height = 2796;
-    } else if (targetResolution === 'android_qhd') {
-      width = 1440;
-      height = 3120;
-    }
-
     generateLockScreenWallpaper(card, style, null, {
       presetId: selectedPresetId,
-      frameStyle,
-      width,
-      height,
     })
       .then((res) => setWallpaperResult(res))
       .catch((e) => console.error('Wallpaper generation failed:', e));
-  }, [card, style, selectedPresetId, frameStyle, targetResolution]);
+  }, [card, style, selectedPresetId]);
 
   if (!card) {
     navigate('/');
@@ -74,15 +52,7 @@ export const WallpaperScreen: React.FC = () => {
 
   const handlePresetSelect = (preset: WallpaperPreset) => {
     haptics.impact('light');
-    archipelagoAudio.playClick();
     setSelectedPresetId(preset.id);
-    setFrameStyle(preset.frameStyle);
-  };
-
-  const handleFrameStyleSelect = (f: 'glass' | 'cyber' | 'minimal' | 'neon' | 'art') => {
-    haptics.impact('light');
-    archipelagoAudio.playClick();
-    setFrameStyle(f);
   };
 
   const handleApplyDirect = async (alsoHome = false) => {
@@ -90,7 +60,6 @@ export const WallpaperScreen: React.FC = () => {
     try {
       setIsApplying(true);
       haptics.impact('medium');
-      archipelagoAudio.playResonance();
       const res = await DeviceTools.setLockScreenWallpaper({
         dataUrl: wallpaperResult.dataUrl,
         alsoHome,
@@ -118,7 +87,6 @@ export const WallpaperScreen: React.FC = () => {
     if (!wallpaperResult) return;
     try {
       haptics.impact('light');
-      archipelagoAudio.playScanSweep();
       await shareOrDownloadFile(
         wallpaperResult.dataUrl,
         `${card.firstName}-lockscreen-wallpaper.png`,
@@ -132,7 +100,6 @@ export const WallpaperScreen: React.FC = () => {
 
   const handleOpenPicker = async () => {
     haptics.impact('light');
-    archipelagoAudio.playClick();
     if (wallpaperResult) {
       shareOrDownloadFile(
         wallpaperResult.dataUrl,
@@ -150,41 +117,23 @@ export const WallpaperScreen: React.FC = () => {
     }
   };
 
-  // Filter presets based on category
-  const filteredPresets = WALLPAPER_PRESETS.filter((p) => {
-    if (activeCategory === 'art') return p.category === 'art';
-    if (activeCategory === 'abstract') return p.category !== 'art';
-    return true;
-  });
-
   return (
     <div className="w-full max-w-md mx-auto px-4 py-4 space-y-5 pb-28 animate-in fade-in">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2">
         <button
-          onClick={() => {
-            archipelagoAudio.playClick();
-            navigate('/');
-          }}
+          onClick={() => navigate('/')}
           className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] touch-target"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back</span>
         </button>
-        <div className="text-center">
-          <span className="text-[9px] font-mono tracking-widest text-[var(--color-accent)] uppercase block font-semibold">
-            ARCHIPELAGO // HUD
-          </span>
-          <h1 className="text-sm font-bold font-serif text-[var(--color-text-primary)]">
-            Lockscreen Art &amp; Wallpaper
-          </h1>
-        </div>
+        <h1 className="text-sm font-bold font-serif text-[var(--color-text-primary)]">
+          Lock-Screen Wallpaper
+        </h1>
         <button
           type="button"
-          onClick={() => {
-            haptics.impact('light');
-            setShowSafeZoneOverlay((prev) => !prev);
-          }}
+          onClick={() => setShowSafeZoneOverlay((prev) => !prev)}
           className="p-2 rounded-xl liquid-glass text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
           title={showSafeZoneOverlay ? 'Hide safe zones' : 'Show safe zones'}
         >
@@ -194,7 +143,7 @@ export const WallpaperScreen: React.FC = () => {
 
       {/* Phone Mockup with Faux Clock Safe-Zone Overlay */}
       <div className="flex flex-col items-center">
-        <div className="w-60 h-[490px] rounded-[42px] border-4 border-zinc-800 bg-black relative overflow-hidden shadow-2xl flex flex-col justify-between p-3 select-none">
+        <div className="w-60 h-[480px] rounded-[40px] border-4 border-zinc-800 bg-black relative overflow-hidden shadow-xl flex flex-col justify-between p-3 select-none">
           {/* Wallpaper Image Background */}
           {wallpaperResult && (
             <img
@@ -221,16 +170,16 @@ export const WallpaperScreen: React.FC = () => {
                   09<span className="text-[var(--color-accent)]">:</span>41
                 </div>
                 <span className="text-2xs font-medium text-white/75 tracking-wider block font-mono">
-                  MON, OCT 5 · 24°C
+                  MON, OCT 5
                 </span>
               </>
             )}
 
             {showSafeZoneOverlay && (
               <div className="pt-2">
-                <div className="w-full border-b border-dashed border-cyan-400/50" />
-                <span className="text-[8px] font-mono tracking-widest text-cyan-300/80 uppercase block pt-0.5">
-                  CLOCK SAFE ZONE (32%)
+                <div className="w-full border-b border-dashed border-white/20" />
+                <span className="text-[8px] tracking-wider text-white/50 uppercase block pt-0.5">
+                  Clock Safe Zone (32%)
                 </span>
               </div>
             )}
@@ -239,9 +188,9 @@ export const WallpaperScreen: React.FC = () => {
           {/* Faux Bottom Shortcuts (Safe Zone: Bottom 14%) */}
           <div className="relative z-10 pb-1 flex flex-col gap-1">
             {showSafeZoneOverlay && (
-              <div className="w-full border-t border-dashed border-cyan-400/50 pt-0.5">
-                <span className="text-[8px] font-mono tracking-widest text-cyan-300/80 uppercase block text-center">
-                  GESTURE SAFE ZONE (14%)
+              <div className="w-full border-t border-dashed border-white/20 pt-0.5">
+                <span className="text-[8px] tracking-wider text-white/50 uppercase block text-center">
+                  Gesture Safe Zone (14%)
                 </span>
               </div>
             )}
@@ -258,14 +207,14 @@ export const WallpaperScreen: React.FC = () => {
         </div>
 
         {/* Mockup Clock Style Switcher */}
-        <div className="flex items-center gap-2 pt-2.5">
+        <div className="flex items-center gap-2 pt-2">
           <button
             type="button"
             onClick={() => setDeviceMockStyle('ios')}
-            className={`px-3 py-1 rounded-xl text-2xs font-mono transition-all ${
+            className={`px-3 py-1 rounded-xl text-2xs transition-all ${
               deviceMockStyle === 'ios'
-                ? 'bg-white/20 font-bold text-[var(--color-text-primary)] shadow-xs border border-white/30'
-                : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]'
+                ? 'bg-black/10 dark:bg-white/15 font-semibold text-[var(--color-text-primary)] shadow-xs'
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
             }`}
           >
             iOS Clock
@@ -274,10 +223,10 @@ export const WallpaperScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setDeviceMockStyle('android')}
-            className={`px-3 py-1 rounded-xl text-2xs font-mono transition-all ${
+            className={`px-3 py-1 rounded-xl text-2xs transition-all ${
               deviceMockStyle === 'android'
-                ? 'bg-white/20 font-bold text-[var(--color-text-primary)] shadow-xs border border-white/30'
-                : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]'
+                ? 'bg-black/10 dark:bg-white/15 font-semibold text-[var(--color-text-primary)] shadow-xs'
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
             }`}
           >
             Android Clock
@@ -285,187 +234,50 @@ export const WallpaperScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 1. Category Filter Segmented Control */}
-      <div className="flex items-center p-1 rounded-2xl liquid-glass border border-black/5 dark:border-white/10 gap-1">
-        <button
-          type="button"
-          onClick={() => {
-            haptics.impact('light');
-            archipelagoAudio.playClick();
-            setActiveCategory('art');
-          }}
-          className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
-            activeCategory === 'art'
-              ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
-              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-          }`}
-        >
-          <span>🎨</span>
-          <span>Art &amp; Cartoons</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            haptics.impact('light');
-            archipelagoAudio.playClick();
-            setActiveCategory('abstract');
-          }}
-          className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
-            activeCategory === 'abstract'
-              ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
-              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-          }`}
-        >
-          <span>🌌</span>
-          <span>Ambient &amp; OLED</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            haptics.impact('light');
-            archipelagoAudio.playClick();
-            setActiveCategory('all');
-          }}
-          className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
-            activeCategory === 'all'
-              ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
-              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-          }`}
-        >
-          All
-        </button>
-      </div>
-
-      {/* 2. Curated Wallpaper Presets Gallery */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-1.5">
-            <Palette className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-            <span className="text-2xs font-mono font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">
-              {activeCategory === 'art' ? 'ART_TEMPLATES // CARTOONS & SCENES' : 'ATMOSPHERE_PRESETS // GALLERY'}
-            </span>
-          </div>
-          <span className="text-[10px] font-mono text-[var(--color-accent)] font-semibold">
-            {filteredPresets.length} TEMPLATES
-          </span>
-        </div>
+      {/* Minimalist Wallpaper Presets */}
+      <div className="space-y-2">
+        <span className="text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider block px-1">
+          Wallpaper Palette
+        </span>
 
         <div className="grid grid-cols-2 gap-2">
-          {filteredPresets.map((preset) => {
+          {WALLPAPER_PRESETS.map((preset) => {
             const isSelected = selectedPresetId === preset.id;
             return (
               <button
                 key={preset.id}
                 type="button"
                 onClick={() => handlePresetSelect(preset)}
-                className={`p-3 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px] border ${
+                className={`p-3 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[78px] border ${
                   isSelected
-                    ? 'border-[var(--color-accent)] ring-2 ring-[var(--color-accent)]/30 shadow-md scale-[1.01]'
-                    : 'border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/25 liquid-glass'
+                    ? 'border-[var(--color-accent)] ring-2 ring-[var(--color-accent)]/20 shadow-md'
+                    : 'border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 liquid-glass'
                 }`}
                 style={{
                   background: `linear-gradient(${preset.gradientAngle}deg, ${preset.gradientStops[0]}, ${preset.gradientStops[1]})`,
                 }}
               >
-                {/* Subtle gradient vignette */}
-                <div className="absolute inset-0 bg-black/25 pointer-events-none" />
-
-                <div className="relative z-10 flex items-start justify-between w-full">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm">{preset.iconEmoji}</span>
-                    <span className="text-[8px] font-mono px-1.5 py-0.5 rounded-full bg-white/20 text-white backdrop-blur-xs font-semibold tracking-wider uppercase">
-                      {preset.category === 'art' ? preset.artTheme : preset.category}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-semibold text-white truncate">
+                    {preset.name}
+                  </span>
                   {isSelected && (
-                    <div className="w-5 h-5 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center shadow-xs">
-                      <Check className="w-3 h-3 stroke-[3]" />
+                    <div className="w-4 h-4 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center shrink-0">
+                      <Check className="w-2.5 h-2.5 stroke-[3]" />
                     </div>
                   )}
                 </div>
-
-                <div className="relative z-10 pt-2">
-                  <p className="text-xs font-bold text-white tracking-tight drop-shadow-xs truncate">
-                    {preset.name}
-                  </p>
-                  <p className="text-[9px] text-white/75 truncate leading-tight">
-                    {preset.tagline}
-                  </p>
-                </div>
+                <p className="text-[10px] text-white/70 truncate leading-tight pt-1">
+                  {preset.tagline}
+                </p>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 3. QR Frame & Pedestal Style Selector */}
-      <div className="space-y-2">
-        <span className="text-2xs font-mono font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block px-1">
-          QR_PEDESTAL // FRAME_STYLE
-        </span>
-        <div className="grid grid-cols-5 gap-1 p-1 rounded-2xl liquid-glass border border-black/5 dark:border-white/10">
-          {(
-            [
-              { id: 'art', label: 'Art Mat' },
-              { id: 'glass', label: 'Liquid Glass' },
-              { id: 'cyber', label: 'Cyber Brackets' },
-              { id: 'minimal', label: 'Minimalist' },
-              { id: 'neon', label: 'Neon Aura' },
-            ] as const
-          ).map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => handleFrameStyleSelect(f.id)}
-              className={`py-2 px-0.5 rounded-xl text-center text-[10px] font-mono transition-all truncate ${
-                frameStyle === f.id
-                  ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 4. Output Resolution Selector */}
-      <div className="space-y-2">
-        <span className="text-2xs font-mono font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block px-1">
-          TARGET_RESOLUTION // CANVAS_DENSITY
-        </span>
-        <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl liquid-glass border border-black/5 dark:border-white/10">
-          {(
-            [
-              { id: 'native', label: 'Device Screen' },
-              { id: 'iphone', label: 'iPhone Pro Max' },
-              { id: 'android_qhd', label: 'Quad HD 1440p' },
-            ] as const
-          ).map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              onClick={() => {
-                haptics.impact('light');
-                archipelagoAudio.playClick();
-                setTargetResolution(r.id);
-              }}
-              className={`py-1.5 px-2 rounded-xl text-center text-[10px] font-mono transition-all ${
-                targetResolution === r.id
-                  ? 'bg-white dark:bg-white/15 text-[var(--color-text-primary)] font-bold shadow-xs'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-              }`}
-            >
-              {r.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. Primary Actions Stack */}
-      <div className="space-y-2.5 pt-1">
+      {/* Primary Actions Stack */}
+      <div className="space-y-2 pt-1">
         <Button
           fullWidth
           size="lg"
@@ -473,21 +285,21 @@ export const WallpaperScreen: React.FC = () => {
           onClick={() => handleApplyDirect(false)}
           disabled={isApplying || !wallpaperResult}
           icon={<Smartphone className="w-4 h-4 text-white" />}
-          className="shadow-md font-mono text-xs tracking-wider"
+          className="shadow-sm font-medium"
         >
-          {isApplying ? 'ENGRAVING WALLPAPER...' : 'SET LOCK SCREEN (ANDROID NATIVE)'}
+          {isApplying ? 'Applying Wallpaper...' : 'Set Lock Screen (Android Native)'}
         </Button>
 
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2">
           <Button
             variant="secondary"
             size="md"
             onClick={() => handleApplyDirect(true)}
             disabled={isApplying || !wallpaperResult}
             icon={<Layers className="w-4 h-4 text-[var(--color-accent)]" />}
-            className="font-mono text-xs tracking-wider"
+            className="font-medium"
           >
-            LOCK + HOME
+            Lock + Home
           </Button>
 
           <Button
@@ -496,9 +308,9 @@ export const WallpaperScreen: React.FC = () => {
             onClick={handleOpenPicker}
             disabled={!wallpaperResult}
             icon={<SlidersHorizontal className="w-4 h-4 text-[var(--color-accent)]" />}
-            className="font-mono text-xs tracking-wider"
+            className="font-medium"
           >
-            SYSTEM PICKER
+            System Picker
           </Button>
         </div>
 
@@ -509,23 +321,23 @@ export const WallpaperScreen: React.FC = () => {
           onClick={handleSaveImage}
           disabled={!wallpaperResult}
           icon={<Download className="w-4 h-4 text-[var(--color-accent)]" />}
-          className="font-mono text-xs tracking-wider"
+          className="font-medium"
         >
-          SAVE 4K WALLPAPER (IOS &amp; GALLERY)
+          Save Wallpaper Image (iOS &amp; Gallery)
         </Button>
       </div>
 
       {/* Platform Instructions */}
-      <div className="p-4 rounded-2xl liquid-glass border border-white/60 dark:border-white/10 space-y-2.5 text-xs text-[var(--color-text-secondary)]">
+      <div className="p-4 rounded-2xl liquid-glass border border-black/5 dark:border-white/10 space-y-2 text-xs text-[var(--color-text-secondary)]">
         <div className="flex items-center gap-2 text-[var(--color-text-primary)] font-semibold">
           <Info className="w-4 h-4 text-[var(--color-accent)]" />
-          <span className="font-mono text-2xs uppercase tracking-wider">PLATFORM INSTRUCTIONS // AIRGAP</span>
+          <span>Device Instructions</span>
         </div>
         <p className="text-2xs leading-relaxed">
-          <strong>iPhone / iOS users:</strong> Tap <strong>Save 4K Wallpaper</strong> &rarr; open <strong>Settings &rarr; Wallpaper &rarr; Add New Wallpaper</strong> &rarr; select Photos &rarr; tap <strong>Set as Wallpaper Pair</strong>.
+          <strong>iPhone / iOS:</strong> Tap <strong>Save Wallpaper Image</strong> &rarr; open <strong>Settings &rarr; Wallpaper &rarr; Add New Wallpaper</strong> &rarr; select Photos &rarr; tap <strong>Set as Wallpaper Pair</strong>.
         </p>
         <p className="text-2xs leading-relaxed opacity-75">
-          <strong>Android users:</strong> Tap <strong>Set Lock Screen</strong> for instant 1-tap setup, or use <strong>System Picker</strong> if your OEM theme requires gallery authorization.
+          <strong>Android:</strong> Tap <strong>Set Lock Screen</strong> for direct 1-tap installation.
         </p>
       </div>
     </div>
